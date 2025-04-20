@@ -2,11 +2,12 @@
 Page Grouping Module for PyPDFScoreSlicer.
 Handles grouping pages into logical parts based on detected information.
 """
-
+import logging
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 from difflib import SequenceMatcher
 
+logger = logging.getLogger(__name__)
 
 @dataclass
 class PageInfo:

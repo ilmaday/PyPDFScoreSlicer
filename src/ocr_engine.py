@@ -3,22 +3,21 @@ OCR & Page Analysis Engine for PyPDFScoreSlicer.
 Handles text extraction and analysis from PDF pages.
 """
 
-import os
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional
-
+import logging
 import pytesseract
+from typing import Dict, Optional
 from PIL import Image
 
-from .config_manager import ConfigManager
+from config_manager import ConfigManager
+
+logger = logging.getLogger(__name__)
 
 
 class OCREngine:
     """Handles OCR operations and text analysis for sheet music pages."""
 
     def __init__(self, tesseract_cmd: Optional[str] = None, config_manager: Optional[ConfigManager] = None):
-        """
-        Initialize the OCR engine.
+        """Initialize the OCR engine.
 
         Args:
             tesseract_cmd (Optional[str]): Path to tesseract executable if not in PATH
@@ -26,10 +25,10 @@ class OCREngine:
         """
         if tesseract_cmd:
             pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
-        
+
         # Use provided config manager or create a new one
         self.config_manager = config_manager or ConfigManager()
-        
+
         # Get instrument parts from config
         self.instrument_parts = self.config_manager.get_instrument_parts()
 
@@ -98,9 +97,9 @@ class OCREngine:
         text = self.extract_text_from_image(image)
         title = self.detect_title(text, page_number)
         part = self.detect_part_name(text)
-        
+
         return {
             'title': title,
             'part': part,
             'raw_text': text
-        } 
+        }

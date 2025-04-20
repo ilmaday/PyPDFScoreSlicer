@@ -4,9 +4,11 @@ Handles loading and managing configuration files.
 """
 
 import json
-import os
 from pathlib import Path
 from typing import Dict, List, Any, Optional
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ConfigManager:

@@ -4,10 +4,12 @@ Handles metadata for PDF files and session persistence.
 """
 
 import json
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, asdict
 
+logger = logging.getLogger(__name__)
 
 @dataclass
 class ScoreMetadata:

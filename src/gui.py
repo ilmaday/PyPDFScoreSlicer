@@ -3,10 +3,9 @@ GUI module for PyPDFScoreSlicer.
 Provides a graphical user interface for the application.
 """
 
-import os
 import sys
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+import logging
+
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
@@ -17,10 +16,11 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QPixmap, QImage
 
-from .pdf_processor import PDFProcessor
-from .metadata_manager import MetadataManager
-from .page_grouper import PageInfo
+from pdf_processor import PDFProcessor
+from metadata_manager import MetadataManager
+from page_grouper import PageInfo
 
+logger = logging.getLogger(__name__)
 
 class ProcessingThread(QThread):
     """Thread for processing PDF files."""

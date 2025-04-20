@@ -3,12 +3,11 @@ Command-line interface for PyPDFScoreSlicer.
 """
 
 import argparse
-import os
 from pathlib import Path
-from typing import Dict, List, Optional
+from pdf_processor import PDFProcessor
+import logging
 
-from .pdf_processor import PDFProcessor
-from .metadata_manager import MetadataManager
+logger = logging.getLogger(__name__)
 
 
 def parse_args():
@@ -68,17 +67,18 @@ def parse_args():
 def main():
     """Main entry point for the CLI."""
     args = parse_args()
-    
+
     # Create output directory if it doesn't exist
     output_dir = Path(args.output_dir)
+    logger.info(f"Creating output directory: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     try:
         # Initialize processor
         processor = PDFProcessor(args.pdf_path, args.tesseract_path)
-        print(f"Processing PDF: {args.pdf_path}")
-        print(f"Total pages: {processor.get_page_count()}")
-        
+        logger.info(f"Processing PDF: {args.pdf_path}")
+        logger.info(f"Total pages: {processor.get_page_count()}")
+
         # Update metadata if provided
         if args.title or args.composer or args.arranger or args.year:
             metadata_updates = {}
@@ -90,39 +90,40 @@ def main():
                 metadata_updates['arranger'] = args.arranger
             if args.year:
                 metadata_updates['year'] = args.year
-                
+
             processor.metadata_manager.update_metadata(
                 args.pdf_path, **metadata_updates
             )
-        
+
         # Analyze pages
-        print("Analyzing pages...")
+        logger.info("Analyzing pages...")
         groups = processor.analyze_all_pages()
-        
+
         # Display results
-        print("\nDetected parts:")
+        logger.info("\nDetected parts:")
         for part, pages in groups.items():
-            print(f"  {part}: {len(pages)} pages ({', '.join(map(str, pages))})")
-        
+            logger.info(
+                f"{part}: {len(pages)} pages ({', '.join(map(str, pages))})"
+            )
+
         # Save session if requested
         if args.session_file:
             processor.metadata_manager.session_file = args.session_file
             processor.metadata_manager.save_session()
-            print(f"\nSession saved to {args.session_file}")
-        
+            logger.info(f"\nSession saved to {args.session_file}")
+
         # Split PDF if not analyze-only
         if not args.analyze_only:
-            print("\nSplitting PDF...")
+            logger.info("\nSplitting PDF...")
             output_files = processor.split_pdf_by_parts(args.output_dir)
-            
-            print("\nOutput files:")
+
+            logger.info("\nOutput files:")
             for part, file_path in output_files.items():
-                print(f"  {part}: {file_path}")
-        
+                logger.info(f"  {part}: {file_path}")
         return 0
-        
+
     except Exception as e:
-        print(f"Error: {e}")
+        logger.info(f"Error: {e}")
         return 1
 
 

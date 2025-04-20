@@ -71,6 +71,8 @@ instance/
 # Sphinx documentation
 docs/_build/
 
+.libs/poppler-24.08.0/
+
 # PyBuilder
 .pybuilder/
 target/
@@ -130,8 +132,10 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.libs
 env/
 venv/
+libs/
 ENV/
 env.bak/
 venv.bak/
